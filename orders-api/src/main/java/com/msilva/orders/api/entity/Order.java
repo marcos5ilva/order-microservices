@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +20,8 @@ public class Order {
     private List<OrderItem> orderItems = new ArrayList<>();
     private Double totalValue;
     private String emailNotification;
-    private Status status;
+    private Status status = Status.PENDING;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime dataTime;
+    private LocalDateTime onCreated = LocalDateTime.now();
 
 }
