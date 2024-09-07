@@ -1,4 +1,4 @@
-package com.msilva.notifications_service.config;
+package com.msilva.processing_service.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -15,9 +15,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Configuration
 public class RabbitMQConfig {
 
@@ -26,42 +23,19 @@ public class RabbitMQConfig {
     @Value("${rabbitmq.queue.name}")
     private String queueName;
 
-    @Value("${rabbitmq.exchange.dlx.name}")
-    private String exchangeDlxName;
-    @Value("${rabbitmq.queue.dlq.name}")
-    private String queueDlqName;
-
     @Bean
-    public FanoutExchange notificationExchange() {
+    public FanoutExchange orderExchange() {
         return new FanoutExchange(exchangeName);
     }
 
     @Bean
-    public FanoutExchange notificationDlxExchange() {
-        return new FanoutExchange(exchangeDlxName);
-    }
-
-    @Bean
-    public Queue notificationQueue() {
+    public Queue processingQueue() {
         return new Queue(queueName);
     }
 
     @Bean
-    public Queue notificationDlqQueue() {
-        Map<String, Object> arguments = new HashMap<>();
-        arguments.put("x-dead-letter-exchange", exchangeDlxName);
-
-        return new Queue(queueDlqName, true, false,false, arguments);
-    }
-
-    @Bean
     public Binding binding() {
-        return BindingBuilder.bind(notificationQueue()).to(notificationExchange());
-    }
-
-    @Bean
-    public Binding bindingDlq() {
-        return BindingBuilder.bind(notificationDlqQueue()).to(notificationDlxExchange());
+        return BindingBuilder.bind(processingQueue()).to(orderExchange());
     }
 
     @Bean
